@@ -5,12 +5,26 @@ import query from "../queries/fetchSongs";
 import gql from "graphql-tag";
 
 class SongList extends Component {
+  onSongDelete(id) {
+    this.props
+      .mutate({
+        variables: { id: id }
+      })
+      .then(() => this.props.data.refetch());
+  }
+
   renderSongs() {
     const songs = this.props.data.songs || [];
-    return songs.map(song => {
+    return songs.map(({ title, id }) => {
       return (
-        <li key={song.id} className="collection-item">
-          {song.title}
+        <li key={id} className="collection-item">
+          <Link to={`/songs/${id}`}>{title}</Link>
+          <i
+            className="material-icons"
+            onClick={this.onSongDelete.bind(this, id)}
+          >
+            delete
+          </i>
         </li>
       );
     });
